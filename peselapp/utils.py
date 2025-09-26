@@ -77,16 +77,39 @@ def _extract_gender(pesel: str) -> str:
     return "Kobieta" if int(pesel[9]) % 2 == 0 else "Mężczyzna"
 
 def validate_pesel(pesel: str) -> dict:
+    """
+    Validates a PESEL number and returns the result as a dictionary.
+
+    Validation steps:
+     - Check type, length and digits
+     - Check control digit
+     - Decode birth date and validate it
+     - Extract gender
+
+    Args:
+        pesel (str): PESEL number as a string of 11 digits.
+
+    Returns:
+        dict: {
+            "valid": bool,
+            "pesel": str,
+            "birth_date": Optional[str],  # YYYY-MM-DD
+            "gender": Optional[str],      # "Kobieta" or "Mężczyzna"
+            "error": Optional[str]        # error message if invalid
+        }
+    """
     if not isinstance(pesel, str):
             return {"valid": False, "pesel": str(pesel), "error": "PESEL musi być łańcuchem znaków"}
     
     if not pesel.isdigit() or len(pesel) != 11:
         return {"valid": False, "pesel": pesel, "error": "PESEL musi składać się z 11 cyfr"}
 
+    # control digit
     calc = _calc_control_digit(pesel)
     if calc != int(pesel[10]):
         return {"valid": False, "pesel": pesel, "error": "Nieprawidłowa cyfra kontrolna"}
 
+    # birth date
     year = int(pesel[0:2])
     month_code = int(pesel[2:4])
     day = int(pesel[4:6])
