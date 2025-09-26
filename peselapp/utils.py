@@ -62,6 +62,20 @@ def _parse_birth_date(year_two: int, month_code: int, day: int) -> Tuple[Optiona
     except ValueError:
         return None, "Nieprawidłowa data urodzenia"
 
+def _extract_gender(pesel: str) -> str:
+    """
+    Extracts gender from PESEL number.
+    The second-to-last digit of PESEL indicates gender:
+        - even = female ("Kobieta")
+        - odd = male ("Mężczyzna")
+
+    Args:
+        pesel (str): PESEL number as a string of 11 digits.
+    Returns:
+        str: "Kobieta" if female, "Mężczyzna" if male.
+    """
+    return "Kobieta" if int(pesel[9]) % 2 == 0 else "Mężczyzna"
+
 def validate_pesel(pesel: str) -> dict:
     if not isinstance(pesel, str):
             return {"valid": False, "pesel": str(pesel), "error": "PESEL musi być łańcuchem znaków"}
@@ -81,5 +95,12 @@ def validate_pesel(pesel: str) -> dict:
     if birth_error:
         return {"valid": False, "pesel": pesel, "error": birth_error}
     
-    print(birth_date_obj)  # debug
-    return {"valid": True, "pesel": pesel, "error": None}
+    gender = _extract_gender(pesel)
+
+    return {
+        "valid": True,
+        "pesel": pesel,
+        "birth_date": birth_date_obj.strftime("%Y-%m-%d"),
+        "gender": gender,
+        "error": None
+    }
