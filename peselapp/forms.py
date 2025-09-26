@@ -1,7 +1,9 @@
 from django import forms
-from django.core.validators import RegexValidator
 
 class PeselForm(forms.Form):
+    """
+    Django form for entering a pesel number.
+    """
     pesel = forms.CharField(
         label="Numer PESEL",
         max_length=11,
