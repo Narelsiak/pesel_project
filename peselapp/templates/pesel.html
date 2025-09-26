@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Walidator PESEL</title>
+</head>
+<body>
+    <h1>Sprawdź numer PESEL</h1>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Sprawdź</button>
+    </form>
+
+    {% if result %}
+        {% if result.valid %}
+        <table class="success">
+        {% else %}
+        <table class="error">
+        {% endif %}
+            <tr>
+                <th>PESEL</th>
+                <td>{{ result.pesel }}</td>
+            </tr>
+            <tr>
+                <th>Wynik</th>
+                <td>{% if result.valid %}Poprawny{% else %}Niepoprawny{% endif %}</td>
+            </tr>
+            {% if result.valid %}
+            <tr>
+                <th>Data urodzenia</th>
+                <td>{{ result.birth_date }}</td>
+            </tr>
+            <tr>
+                <th>Płeć</th>
+                <td>{{ result.gender }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <th>Błąd</th>
+                <td>{{ result.error }}</td>
+            </tr>
+            {% endif %}
+        </table>
+    {% endif %}
+
+</body>
+</html>
